@@ -1,0 +1,15 @@
+{
+  "name": "poker-server",
+  "version": "0.0.1",
+  "description": "Poker planning backend for Sprint plan/refinement",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Predrag Vlajkovic drPreAG <predrag.vlajkovic@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "*",
+    "express": "*"
+  }
+}
