@@ -1,6 +1,6 @@
 {
   "name": "poker-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Poker planning backend for Sprint plan/refinement",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,10 @@
   "author": "Predrag Vlajkovic drPreAG <predrag.vlajkovic@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "socket.io": "*",
-    "express": "*"
+    "compression": "^1.7.3",
+    "cors": "^2.8.4",
+    "express": "*",
+    "helmet": "^3.14.0",
+    "socket.io": "*"
   }
 }
