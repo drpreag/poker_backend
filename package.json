@@ -13,6 +13,7 @@
     "cors": "^2.8.4",
     "express": "*",
     "helmet": "^3.14.0",
+    "nodemon": "^1.18.4",
     "socket.io": "*"
   }
 }
