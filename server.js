@@ -36,18 +36,6 @@ app.get ('/session/:session', function (req, res) {
 
 });
 
-// app.get ('/session/:session/algorythm', function (req, res) {
-// 	console.log ('API request for /session/%d/algorythm/', req.params.session);		
-
-// 	var algorythm = 1;
-// 	for (var i=0; i<sessions.length; i++) {
-// 		if (sessions[i].session == req.params.session) {
-// 			algorythm = sessions[i].algorythm;
-// 		}
-// 	}		
-// 	res.json ({ session: req.params.session, algorythm: algorythm });
-// });
-
 app.get ('/session/:session/votes', function (req, res) {
 	var response = [];
 	console.log ('API request for /session/%d/votes/', req.params.session);	
@@ -167,14 +155,8 @@ io.on('connection', function(socket) {
 		for (i=0; i<votes.length; i++) {
 		    if (votes[i].session == data.session) {
 				voted.push ( { session: Number(votes[i].session), username: votes[i].username, vote: votes[i].vote } );
-				// if (votes[i].vote == null) 
-				// 	missing = true;	// at least one user did not vote
 		    }
 		}		
-		// if (! missing) {
-		// 	console.log ("All voted in session " + data.session);	
-		// 	socket.broadcast.emit ('show_all_votes', data);		
-		// }
 	});	
 
 	// Votes have been cleared
