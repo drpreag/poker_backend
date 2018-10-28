@@ -1,52 +1,83 @@
-var express = require ('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require ('socket.io').listen (server);
-var cors = require('cors'); 
+const express = require ('express');
+const app = express();
+app.use (express.json());
+
+const server = require('http').createServer(app);
+
+const io = require ('socket.io').listen (server);
+
+const cors = require('cors'); 
 app.use(cors());
-var compression = require('compression');
+
+const compression = require('compression');
 app.use (compression());
-var helmet = require('helmet');
+
+const helmet = require('helmet');
 app.use (helmet());
 
-sessions = [];  	// session, user
+app.disable('etag');
+
+const serverPort = process.env.PORT || 3000;
+
+sessions = [ 		// session, user, algorythm, date
+	{ session: 91969, user: "Peca", algorythm: 2, date: "2018 Oct 01" }
+];  	
 users = [];			// socketid, session, username
 votes = []; 		// session, user, vote
 connections = [];	// socket.io connections
 
-server.listen (process.env.PORT || 3000);
+server.listen (serverPort);
 
-console.log ('Poker plan server is up and running');
+console.log (`Poker plan server is up and running on port ${serverPort}...`);
 
+
+// index.html
 app.get ('/', function (req, res) {
 	console.log ('Request for /');	
 	res.sendFile (__dirname + '/index.html');
 });
 
-app.get ('/session/:session', function (req, res) {
-	console.log ('API request for /session/' + req.params.session);		
+// api/sessions
+app.get ('/api/sessions', function (req, res) {
+	console.log ("API request for /api/sessions");	
 
-	for (var i=0; i<sessions.length; i++) {
-		if (sessions[i].session == req.params.session) {
-			res.json ({ session: req.params.session, exists: true, algorythm: sessions[i].algorythm, story: sessions[i].story, date: sessions[i].date });			
-		}
-	}
-	// session does not exist
-	res.json ({ session: req.params.session, exists: false });
-
+	if (sessions.length===0) 
+		return res.status(404).send("Sessions not found");
+	res.send (sessions);
+	console.log ("  Sessions found");
 });
 
-app.get ('/session/:session/votes', function (req, res) {
+// api/session/:id
+app.get ('/api/sessions/:id', function (req, res) {
+	console.log ("API request for /api/sessions/" + req.params.id);
+
+	if (isNaN(req.params.id)) 
+		return res.status(400).send("Invalid input " + req.params.id);
+	const sessionId = parseInt(req.params.id);
+	const session = sessions.find (s => s.session === sessionId);
+
+	if (session)
+		return res.send ({ session: sessionId, exists: true, algorythm: session.algorythm, story: session.story, date: session.date });
+	res.status(404).send("Session not found " +  sessionId);
+});
+
+app.get ('/api/sessions/:id/votes', function (req, res) {
+	console.log ('API request for /api/sessions/%d/votes/', req.params.id);	
+
+	if (isNaN(req.params.id)) 
+		return res.status(400).send("Invalid input " + req.params.session);
+
+	const sessionId = parseInt(req.params.id);
 	var response = [];
-	console.log ('API request for /session/%d/votes/', req.params.session);	
-	session_id = Number(req.params.session);
 
 	for (var i=0; i<votes.length; i++) {
-	 	if (votes[i].session == session_id) {
-	 		response.push ( {session: Number(votes[i].session), username: votes[i].username, vote: votes[i].vote} );
+	 	if (votes[i].session == sessionId) {
+	 		response.push ( {session: sessionId, username: votes[i].username, vote: votes[i].vote} );	 		
 		}
-	}		
-	res.json(response);
+	}
+	if (response.length!==0)
+		return res.send(response);
+	res.status(404).send("Votes not found for session " +  sessionId);
 });
 
 
