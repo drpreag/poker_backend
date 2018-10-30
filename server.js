@@ -181,3 +181,10 @@ io.on('connection', function(socket) {
 		listeners.showAllVotes (socket, data)	
 	});	
 });
+
+function stop() {
+  server.close();
+}
+
+module.exports = app;
+module.exports.stop = stop;

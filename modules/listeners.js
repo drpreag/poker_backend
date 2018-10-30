@@ -1,4 +1,3 @@
-		
 function disconnect (socket, users, votes, connection, data) {
 	console.log ('User %s on a session %d disconnected', users.indexOf(socket.id).username, users.indexOf(socket.id).session);
 	// delete votes
